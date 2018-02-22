@@ -1,0 +1,8 @@
+[package]
+name = "snake"
+version = "0.1.0"
+authors = ["Simon Brahan <simon.brahan@frogeducation.com>"]
+
+[lib]
+name = "snake"
+path = "src/snake/mod.rs"
