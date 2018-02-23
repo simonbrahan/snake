@@ -35,17 +35,20 @@ impl Location {
 /// use snake::*;
 /// let current_loc = &snake::Location::new(0, 0);
 ///
-/// let current_loc = snake::move_loc(&current_loc, &snake::Direction::Up);
+/// let current_loc = snake::get_next_loc(&current_loc, &snake::Direction::Up);
 /// assert_eq!(snake::Location::new(0, 1), current_loc);
-/// let current_loc = snake::move_loc(&current_loc, &snake::Direction::Right);
+///
+/// let current_loc = snake::get_next_loc(&current_loc, &snake::Direction::Right);
 /// assert_eq!(snake::Location::new(1, 1), current_loc);
-/// let current_loc = snake::move_loc(&current_loc, &snake::Direction::Down);
+///
+/// let current_loc = snake::get_next_loc(&current_loc, &snake::Direction::Down);
 /// assert_eq!(snake::Location::new(1, 0), current_loc);
-/// let current_loc = snake::move_loc(&current_loc, &snake::Direction::Left);
+///
+/// let current_loc = snake::get_next_loc(&current_loc, &snake::Direction::Left);
 /// assert_eq!(snake::Location::new(0, 0), current_loc);
 /// ```
 ///
-pub fn move_loc(current_loc: &Location, move_dir: &Direction) -> Location {
+pub fn get_next_loc(current_loc: &Location, move_dir: &Direction) -> Location {
     return match move_dir {
         &Direction::Up => Location::new(current_loc.x, current_loc.y + 1),
         &Direction::Down => Location::new(current_loc.x, current_loc.y - 1),
