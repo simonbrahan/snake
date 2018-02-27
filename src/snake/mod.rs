@@ -1,3 +1,61 @@
+use std::collections::VecDeque;
+
+pub type Body = VecDeque<Location>;
+
+pub trait BodyExt {
+    fn extend_in_direction(&mut self, direction: &Direction);
+}
+
+impl BodyExt for Body {
+    ///
+    /// Add new "head" to snake in desired direction
+    ///
+    /// # Examples
+    /// ```
+    /// use snake::*;
+    /// let mut current_body = snake::Body::from(
+    ///     vec![
+    ///         snake::Location::new(0, 0),
+    ///         snake::Location::new(0, 1),
+    ///         snake::Location::new(1, 1)
+    ///     ]
+    /// );
+    ///
+    /// let expected_body = snake::Body::from(
+    ///     vec![
+    ///         snake::Location::new(-1, 0),
+    ///         snake::Location::new(0, 0),
+    ///         snake::Location::new(0, 1),
+    ///         snake::Location::new(1, 1)
+    ///     ]
+    /// );
+    ///
+    /// current_body.extend_in_direction(&snake::Direction::Left);
+    ///
+    /// assert_eq!(current_body, expected_body);
+    /// ```
+    ///
+    /// ```
+    /// use snake::*;
+    /// let mut current_body = snake::Body::from(vec![]);
+    ///
+    /// let expected_body = snake::Body::from(vec![snake::Location::new(0, 0)]);
+    ///
+    /// current_body.extend_in_direction(&snake::Direction::Left);
+    ///
+    /// assert_eq!(current_body, expected_body);
+    /// ```
+    ///
+    fn extend_in_direction(&mut self, direction: &Direction) {
+        if self.is_empty() {
+            self.push_front(Location::new(0, 0));
+        } else {
+            let new_front = get_next_loc(self.front().unwrap(), direction);
+            self.push_front(new_front);
+        }
+    }
+}
+
 pub enum Direction {
     Up,
     Down,
