@@ -1,61 +1,73 @@
 use std::collections::VecDeque;
 
-pub type Body = VecDeque<Location>;
-
-pub trait BodyExt {
-    fn extend_in_direction(&mut self, direction: &Direction);
+#[derive(Debug)]
+#[derive(PartialEq)]
+pub struct Snake {
+    pub body: VecDeque<Location>,
+    pub length: usize,
+    pub current_dir: Direction
 }
 
-impl BodyExt for Body {
-    ///
-    /// Add new "head" to snake in desired direction
+impl Snake {
     ///
     /// # Examples
     /// ```
-    /// use snake::*;
-    /// let mut current_body = snake::Body::from(
-    ///     vec![
-    ///         snake::Location::new(0, 0),
-    ///         snake::Location::new(0, 1),
-    ///         snake::Location::new(1, 1)
-    ///     ]
-    /// );
+    /// use std::collections::VecDeque;
+    /// use snake::{Snake, Location, Direction};
+    /// let mut snake = Snake {
+    ///     body: VecDeque::from(vec![Location::new(0, 0), Location::new(0, 1)]),
+    ///     length: 2,
+    ///     current_dir: Direction::Left
+    /// };
     ///
-    /// let expected_body = snake::Body::from(
-    ///     vec![
-    ///         snake::Location::new(-1, 0),
-    ///         snake::Location::new(0, 0),
-    ///         snake::Location::new(0, 1),
-    ///         snake::Location::new(1, 1)
-    ///     ]
-    /// );
+    /// let expected = Snake {
+    ///     body: VecDeque::from(vec![Location::new(-1, 0), Location::new(0, 0)]),
+    ///     length: 2,
+    ///     current_dir: Direction::Left
+    /// };
     ///
-    /// current_body.extend_in_direction(&snake::Direction::Left);
+    /// snake.move_snake();
     ///
-    /// assert_eq!(current_body, expected_body);
+    /// assert_eq!(snake, expected);
     /// ```
     ///
     /// ```
-    /// use snake::*;
-    /// let mut current_body = snake::Body::from(vec![]);
+    /// use std::collections::VecDeque;
+    /// use snake::{Snake, Location, Direction};
+    /// let mut snake = Snake {
+    ///     body: VecDeque::from(vec![]),
+    ///     length: 2,
+    ///     current_dir: Direction::Left
+    /// };
     ///
-    /// let expected_body = snake::Body::from(vec![snake::Location::new(0, 0)]);
+    /// let expected = Snake {
+    ///     body: VecDeque::from(vec![Location::new(0, 0)]),
+    ///     length: 2,
+    ///     current_dir: Direction::Left
+    /// };
     ///
-    /// current_body.extend_in_direction(&snake::Direction::Left);
+    /// snake.move_snake();
     ///
-    /// assert_eq!(current_body, expected_body);
+    /// assert_eq!(snake, expected);
     /// ```
     ///
-    fn extend_in_direction(&mut self, direction: &Direction) {
-        if self.is_empty() {
-            self.push_front(Location::new(0, 0));
+    pub fn move_snake(&mut self) {
+        self.body.truncate(self.length - 1);
+        self.new_head();
+    }
+
+    fn new_head(&mut self) {
+        if self.body.is_empty() {
+            self.body.push_front(Location::new(0, 0));
         } else {
-            let new_front = get_next_loc(self.front().unwrap(), direction);
-            self.push_front(new_front);
+            let new_front = get_next_loc(self.body.front().unwrap(), &self.current_dir);
+            self.body.push_front(new_front);
         }
     }
 }
 
+#[derive(Debug)]
+#[derive(PartialEq)]
 pub enum Direction {
     Up,
     Down,
