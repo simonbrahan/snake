@@ -1,5 +1,8 @@
 use std::collections::VecDeque;
 
+use std::thread::sleep;
+use std::time::Duration;
+
 #[derive(Debug)]
 enum Direction {
     Up,
@@ -32,7 +35,7 @@ struct Game {
 }
 
 fn main() {
-    let game = Game {
+    let mut game = Game {
         trail: VecDeque::from(
             vec![
                 Location::new(10, 10),
@@ -47,10 +50,20 @@ fn main() {
         apple: Location::new(5, 5)
     };
 
-    draw(&game);
+    let mut count = 0;
+
+    loop {
+        draw(&game);
+        println!("game tick {}", count);
+        count += 1;
+        sleep(Duration::from_secs(1));
+    }
 }
 
 fn draw(game: &Game) {
+    // clear the terminal
+    println!("{}[2J", 27 as char);
+
     for y in 0..game.grid_size {
         let mut row = String::new();
         for x in 0..game.grid_size {
