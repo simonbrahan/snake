@@ -1,7 +1,5 @@
 use std::collections::VecDeque;
-
-use std::thread::sleep;
-use std::time::Duration;
+use std::io;
 
 #[derive(Debug)]
 enum Direction {
@@ -38,9 +36,7 @@ fn main() {
     let mut game = Game {
         trail: VecDeque::from(
             vec![
-                Location::new(10, 10),
-                Location::new(10, 11),
-                Location::new(11, 11)
+                Location::new(10, 10)
             ]
         ),
         trail_len: 5,
@@ -50,13 +46,21 @@ fn main() {
         apple: Location::new(5, 5)
     };
 
-    let mut count = 0;
-
     loop {
         draw(&game);
-        println!("game tick {}", count);
-        count += 1;
-        sleep(Duration::from_secs(1));
+        println!("Enter a direction: wasd");
+        let mut input = String::new();
+        io::stdin().read_line(&mut input)
+                   .ok()
+                   .expect("Failed to read input");
+
+        match input.trim() {
+            "w" => game.player_direction = Direction::Up,
+            "a" => game.player_direction = Direction::Left,
+            "s" => game.player_direction = Direction::Down,
+            "d" => game.player_direction = Direction::Right,
+            _ => println!("Unrecognised key")
+        }
     }
 }
 
@@ -78,4 +82,6 @@ fn draw(game: &Game) {
 
         println!("{}", row);
     }
+
+    println!("Current direction: {:?}", game.player_direction);
 }
