@@ -27,9 +27,15 @@ struct Game {
     trail: VecDeque<Location>,
     trail_len: usize,
     grid_size: usize,
-    player_head: Location,
     player_direction: Direction,
     apple: Location
+}
+
+impl Game {
+    fn current_head(&self) -> Location {
+        let ref current_head = self.trail.front().unwrap();
+        return Location::new(current_head.x, current_head.y);
+    }
 }
 
 fn main() {
@@ -41,7 +47,6 @@ fn main() {
         ),
         trail_len: 5,
         grid_size: 20,
-        player_head: Location::new(10, 10),
         player_direction: Direction::Right,
         apple: Location::new(5, 5)
     };
@@ -61,6 +66,14 @@ fn main() {
             "d" => game.player_direction = Direction::Right,
             _ => println!("Unrecognised key")
         }
+
+        let current_head = game.current_head();
+
+        game.trail.push_front(
+            get_next_loc(&current_head, &game.player_direction)
+        );
+
+        game.trail.truncate(game.trail_len);
     }
 }
 
@@ -84,4 +97,13 @@ fn draw(game: &Game) {
     }
 
     println!("Current direction: {:?}", game.player_direction);
+}
+
+fn get_next_loc(current_loc: &Location, move_dir: &Direction) -> Location {
+    return match move_dir {
+        &Direction::Up => Location::new(current_loc.x, current_loc.y - 1),
+        &Direction::Down => Location::new(current_loc.x, current_loc.y + 1),
+        &Direction::Left => Location::new(current_loc.x - 1, current_loc.y),
+        &Direction::Right => Location::new(current_loc.x + 1, current_loc.y)
+    };
 }
