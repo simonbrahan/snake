@@ -1,5 +1,8 @@
+extern crate rand;
+
 use std::collections::VecDeque;
 use std::io;
+use rand::Rng;
 
 #[derive(Debug)]
 enum Direction {
@@ -19,6 +22,13 @@ struct Location {
 impl Location {
     pub fn new(x: usize, y: usize) -> Location {
         return Location { x: x, y: y };
+    }
+
+    pub fn random(grid_size: &usize) -> Location {
+        return Location::new(
+            rand::thread_rng().gen_range(1, *grid_size),
+            rand::thread_rng().gen_range(1, *grid_size)
+        );
     }
 
     pub fn to_up(&self, grid_size: &usize) -> Location {
@@ -120,6 +130,11 @@ fn main() {
             &game.player_direction,
             &game.grid_size
         );
+
+        if next_head == game.apple {
+            game.trail_len += 1;
+            game.apple = Location::random(&game.grid_size);
+        }
 
         game.trail.push_front(next_head);
 

@@ -6,3 +6,6 @@ authors = ["Simon Brahan <simon.brahan@frogeducation.com>"]
 [lib]
 name = "snake"
 path = "src/snake/mod.rs"
+
+[dependencies]
+rand = "0.4.2"
