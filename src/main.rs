@@ -20,6 +20,54 @@ impl Location {
     pub fn new(x: usize, y: usize) -> Location {
         return Location { x: x, y: y };
     }
+
+    pub fn to_up(&self, grid_size: &usize) -> Location {
+        let new_y;
+
+        if self.y == 0 {
+            new_y = grid_size - 1;
+        } else {
+            new_y = self.y - 1;
+        }
+
+        return Location::new(self.x, new_y);
+    }
+
+    pub fn to_down(&self, grid_size: &usize) -> Location {
+        let new_y;
+
+        if self.y >= *grid_size - 1 {
+            new_y = 0;
+        } else {
+            new_y = self.y + 1;
+        }
+
+        return Location::new(self.x, new_y);
+    }
+
+    pub fn to_left(&self, grid_size: &usize) -> Location {
+        let new_x;
+
+        if self.x == 0 {
+            new_x = *grid_size - 1;
+        } else {
+            new_x = self.x - 1;
+        }
+
+        return Location::new(new_x, self.y);
+    }
+
+    pub fn to_right(&self, grid_size: &usize) -> Location {
+        let new_x;
+
+        if self.x >= *grid_size - 1 {
+            new_x = 0;
+        } else {
+            new_x = self.x + 1;
+        }
+
+        return Location::new(new_x, self.y);
+    }
 }
 
 #[derive(Debug)]
@@ -67,11 +115,13 @@ fn main() {
             _ => println!("Unrecognised key")
         }
 
-        let current_head = game.current_head();
-
-        game.trail.push_front(
-            get_next_loc(&current_head, &game.player_direction)
+        let next_head = get_next_loc(
+            &game.current_head(),
+            &game.player_direction,
+            &game.grid_size
         );
+
+        game.trail.push_front(next_head);
 
         game.trail.truncate(game.trail_len);
     }
@@ -95,15 +145,14 @@ fn draw(game: &Game) {
 
         println!("{}", row);
     }
-
-    println!("Current direction: {:?}", game.player_direction);
 }
 
-fn get_next_loc(current_loc: &Location, move_dir: &Direction) -> Location {
+fn get_next_loc(current_loc: &Location, move_dir: &Direction, grid_size: &usize) -> Location {
     return match move_dir {
-        &Direction::Up => Location::new(current_loc.x, current_loc.y - 1),
-        &Direction::Down => Location::new(current_loc.x, current_loc.y + 1),
-        &Direction::Left => Location::new(current_loc.x - 1, current_loc.y),
-        &Direction::Right => Location::new(current_loc.x + 1, current_loc.y)
+        &Direction::Up => current_loc.to_up(&grid_size),
+        &Direction::Down => current_loc.to_down(&grid_size),
+        &Direction::Left => current_loc.to_left(&grid_size),
+        &Direction::Right => current_loc.to_right(&grid_size)
     };
 }
+
