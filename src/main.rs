@@ -122,7 +122,7 @@ fn main() {
             "a" => game.player_direction = Direction::Left,
             "s" => game.player_direction = Direction::Down,
             "d" => game.player_direction = Direction::Right,
-            _ => println!("Unrecognised key")
+            _ => ()
         }
 
         let next_head = get_next_loc(
