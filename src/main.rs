@@ -136,7 +136,11 @@ fn main() {
             game.apple = Location::random(&game.grid_size);
         }
 
-        game.trail.push_front(next_head);
+        if game.trail.contains(&next_head) {
+            game.trail_len = 5;
+        } else {
+            game.trail.push_front(next_head);
+        }
 
         game.trail.truncate(game.trail_len);
     }
