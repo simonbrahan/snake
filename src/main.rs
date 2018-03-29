@@ -1,40 +1,38 @@
 extern crate snake;
+extern crate piston_window;
+extern crate num;
 
-use std::io;
+use std::{io, thread, time};
 use snake::{Game, accept_input, do_game_move};
+use piston_window::*;
+use num::cast::cast;
 
 fn main() {
     let mut game = snake::Game::new();
+    let mut window: PistonWindow =
+        WindowSettings::new("Snake", [640, 640])
+        .exit_on_esc(true).build().unwrap();
 
-    loop {
-        draw(&game);
-        println!("Enter a direction: wasd");
-        let mut input = String::new();
-        io::stdin().read_line(&mut input)
-                   .ok()
-                   .expect("Failed to read input");
-
-        accept_input(&mut game, input.trim());
-        do_game_move(&mut game);
-    }
-}
-
-fn draw(game: &Game) {
-    // clear the terminal
-    println!("{}[2J", 27 as char);
-
-    for y in 0..game.grid_size {
-        let mut row = String::new();
-        for x in 0..game.grid_size {
-            if game.snake_on(x, y) {
-                row.push('*');
-            } else if game.apple_on(x, y) {
-                row.push('#');
-            } else {
-                row.push(' ');
-            }
+    while let Some(event) = window.next() {
+        for body_part in &game.trail {
+            window.draw_2d(&event, |context, graphics| {
+                    clear([1.0; 4], graphics);
+                    rectangle(
+                        [1.0, 0.0, 0.0, 1.0], // red
+                        [
+                            cast(body_part.x * 5).unwrap(),
+                            cast(body_part.y * 5).unwrap(),
+                            cast((body_part.x + 1) * 5).unwrap(),
+                            cast((body_part.y + 1) * 5).unwrap()
+                        ],
+                        context.transform,
+                        graphics
+                    );
+                });
         }
 
-        println!("{}", row);
+        do_game_move(&mut game);
+
+        thread::sleep(time::Duration::from_millis(100));
     }
 }

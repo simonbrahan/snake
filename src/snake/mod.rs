@@ -1,5 +1,6 @@
 extern crate rand;
 
+use std::collections::VecDeque;
 use rand::Rng;
 
 #[derive(Debug)]
@@ -12,7 +13,7 @@ enum Direction {
 
 #[derive(Debug)]
 #[derive(PartialEq)]
-struct Location {
+pub struct Location {
     pub x: usize,
     pub y: usize
 }
@@ -80,7 +81,7 @@ impl Location {
 
 #[derive(Debug)]
 pub struct Game {
-    trail: ::std::collections::VecDeque<Location>,
+    pub trail: VecDeque<Location>,
     trail_len: usize,
     pub grid_size: usize,
     player_direction: Direction,
@@ -92,7 +93,7 @@ impl Game {
         let grid_size: usize = 20;
 
         return Game {
-            trail: ::std::collections::VecDeque::from(vec![Location::random(&grid_size)]),
+            trail: VecDeque::from(vec![Location::random(&grid_size)]),
             trail_len: 5,
             grid_size: grid_size,
             player_direction: Direction::Right,

@@ -9,3 +9,5 @@ path = "src/snake/mod.rs"
 
 [dependencies]
 rand = "0.4.2"
+piston_window = "0.70.0"
+num = "0.1"
