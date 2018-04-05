@@ -2,8 +2,7 @@ extern crate snake;
 extern crate piston_window;
 extern crate num;
 
-use std::{io, thread, time};
-use snake::{Game, accept_input, do_game_move, Direction};
+use snake::{do_game_move, Direction};
 use piston_window::*;
 use num::cast::cast;
 
@@ -30,15 +29,27 @@ fn main() {
                 rectangle(
                     [0.5, 0.0, 0.0, 1.0], // red
                     [
-                        cast(body_part.x * 32).unwrap(),
-                        cast(body_part.y * 32).unwrap(),
-                        32.0,
-                        32.0
+                        cast(body_part.x * 32 + 1).unwrap(),
+                        cast(body_part.y * 32 + 1).unwrap(),
+                        31.0,
+                        31.0
                     ],
                     context.transform,
                     graphics
                 );
             }
+
+            rectangle(
+                [0.0, 0.5, 0.0, 1.0], // green
+                [
+                    cast(&game.apple.x * 32 + 1).unwrap(),
+                    cast(&game.apple.y * 32 + 1).unwrap(),
+                    31.0,
+                    31.0
+                ],
+                context.transform,
+                graphics
+            );
         });
 
         event.update(|arg| {

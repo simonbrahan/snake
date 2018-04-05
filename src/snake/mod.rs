@@ -97,7 +97,7 @@ pub struct Game {
     trail_len: usize,
     pub grid_size: usize,
     player_direction: Direction,
-    apple: Location,
+    pub apple: Location,
     waiting_time: f64
 }
 
