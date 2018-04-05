@@ -120,14 +120,6 @@ impl Game {
         return Location::new(current_head.x, current_head.y);
     }
 
-    pub fn snake_on(&self, x: usize, y: usize) -> bool {
-        return self.trail.contains(&Location::new(x, y));
-    }
-
-    pub fn apple_on(&self, x: usize, y: usize) -> bool {
-        return self.apple == Location::new(x, y);
-    }
-
     pub fn change_dir(&mut self, new_dir: Direction) {
         if new_dir == self.player_direction.opposite() {
             return;
@@ -137,20 +129,15 @@ impl Game {
     }
 }
 
-pub fn accept_input(game: &mut Game, input: &str) {
-    match input {
-        "w" => game.player_direction = Direction::Up,
-        "a" => game.player_direction = Direction::Left,
-        "s" => game.player_direction = Direction::Down,
-        "d" => game.player_direction = Direction::Right,
-        _ => ()
-    }
-}
-
 pub fn do_game_move(game: &mut Game, time_change: f64) {
+
+    /*
+     * do_game_move is called far more than the desired move rate
+     * waitin_time is kept to record when the snake should move
+     */
     game.waiting_time += time_change;
 
-    if game.waiting_time < 0.2 {
+    if game.waiting_time < 0.1 {
         return;
     }
 
