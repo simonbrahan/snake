@@ -4,11 +4,23 @@ use std::collections::VecDeque;
 use rand::Rng;
 
 #[derive(Debug)]
-enum Direction {
+#[derive(PartialEq)]
+pub enum Direction {
     Up,
     Down,
     Left,
     Right
+}
+
+impl Direction {
+    fn opposite(&self) -> Direction {
+        return match self {
+            &Direction::Up => Direction::Down,
+            &Direction::Down => Direction::Up,
+            &Direction::Left => Direction::Right,
+            &Direction::Right => Direction::Left
+        };
+    }
 }
 
 #[derive(Debug)]
@@ -114,6 +126,14 @@ impl Game {
 
     pub fn apple_on(&self, x: usize, y: usize) -> bool {
         return self.apple == Location::new(x, y);
+    }
+
+    pub fn change_dir(&mut self, new_dir: Direction) {
+        if new_dir == self.player_direction.opposite() {
+            return;
+        }
+
+        self.player_direction = new_dir;
     }
 }
 
