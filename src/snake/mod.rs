@@ -85,7 +85,8 @@ pub struct Game {
     trail_len: usize,
     pub grid_size: usize,
     player_direction: Direction,
-    apple: Location
+    apple: Location,
+    waiting_time: f64
 }
 
 impl Game {
@@ -97,7 +98,8 @@ impl Game {
             trail_len: 5,
             grid_size: grid_size,
             player_direction: Direction::Right,
-            apple: Location::random(&grid_size)
+            apple: Location::random(&grid_size),
+            waiting_time: 0.0
         };
     }
 
@@ -125,7 +127,15 @@ pub fn accept_input(game: &mut Game, input: &str) {
     }
 }
 
-pub fn do_game_move(game: &mut Game) {
+pub fn do_game_move(game: &mut Game, time_change: f64) {
+    game.waiting_time += time_change;
+
+    if game.waiting_time < 0.2 {
+        return;
+    }
+
+    game.waiting_time = 0.0;
+
     let next_head = get_next_loc(
         &game.current_head(),
         &game.player_direction,
