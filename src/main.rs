@@ -1,16 +1,17 @@
-extern crate snake;
-extern crate piston_window;
 extern crate num;
+extern crate piston_window;
+extern crate snake;
 
-use snake::{do_game_move, Direction};
-use piston_window::*;
 use num::cast::cast;
+use piston_window::*;
+use snake::{do_game_move, Direction};
 
 fn main() {
     let mut game = snake::Game::new();
-    let mut window: PistonWindow =
-        WindowSettings::new("Snake", [640, 640])
-        .exit_on_esc(true).build().unwrap();
+    let mut window: PistonWindow = WindowSettings::new("Snake", [640, 640])
+        .exit_on_esc(true)
+        .build()
+        .unwrap();
 
     while let Some(event) = window.next() {
         if let Some(Button::Keyboard(key)) = event.press_args() {
@@ -19,7 +20,7 @@ fn main() {
                 Key::Down => game.change_dir(Direction::Down),
                 Key::Left => game.change_dir(Direction::Left),
                 Key::Right => game.change_dir(Direction::Right),
-                _ => ()
+                _ => (),
             }
         }
 
@@ -32,10 +33,10 @@ fn main() {
                         cast(body_part.x * 32 + 1).unwrap(),
                         cast(body_part.y * 32 + 1).unwrap(),
                         31.0,
-                        31.0
+                        31.0,
                     ],
                     context.transform,
-                    graphics
+                    graphics,
                 );
             }
 
@@ -45,10 +46,10 @@ fn main() {
                     cast(&game.apple.x * 32 + 1).unwrap(),
                     cast(&game.apple.y * 32 + 1).unwrap(),
                     31.0,
-                    31.0
+                    31.0,
                 ],
                 context.transform,
-                graphics
+                graphics,
             );
         });
 

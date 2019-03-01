@@ -1,15 +1,14 @@
 extern crate rand;
 
-use std::collections::VecDeque;
 use rand::Rng;
+use std::collections::VecDeque;
 
-#[derive(Debug)]
-#[derive(PartialEq)]
+#[derive(Debug, PartialEq)]
 pub enum Direction {
     Up,
     Down,
     Left,
-    Right
+    Right,
 }
 
 impl Direction {
@@ -18,16 +17,15 @@ impl Direction {
             &Direction::Up => Direction::Down,
             &Direction::Down => Direction::Up,
             &Direction::Left => Direction::Right,
-            &Direction::Right => Direction::Left
+            &Direction::Right => Direction::Left,
         };
     }
 }
 
-#[derive(Debug)]
-#[derive(PartialEq)]
+#[derive(Debug, PartialEq)]
 pub struct Location {
     pub x: usize,
-    pub y: usize
+    pub y: usize,
 }
 
 impl Location {
@@ -38,7 +36,7 @@ impl Location {
     fn random(grid_size: &usize) -> Location {
         return Location::new(
             rand::thread_rng().gen_range(1, *grid_size),
-            rand::thread_rng().gen_range(1, *grid_size)
+            rand::thread_rng().gen_range(1, *grid_size),
         );
     }
 
@@ -98,7 +96,7 @@ pub struct Game {
     pub grid_size: usize,
     player_direction: Direction,
     pub apple: Location,
-    waiting_time: f64
+    waiting_time: f64,
 }
 
 impl Game {
@@ -111,7 +109,7 @@ impl Game {
             grid_size: grid_size,
             player_direction: Direction::Right,
             apple: Location::random(&grid_size),
-            waiting_time: 0.0
+            waiting_time: 0.0,
         };
     }
 
@@ -130,7 +128,6 @@ impl Game {
 }
 
 pub fn do_game_move(game: &mut Game, time_change: f64) {
-
     /*
      * do_game_move is called far more than the desired move rate
      * waitin_time is kept to record when the snake should move
@@ -146,7 +143,7 @@ pub fn do_game_move(game: &mut Game, time_change: f64) {
     let next_head = get_next_loc(
         &game.current_head(),
         &game.player_direction,
-        &game.grid_size
+        &game.grid_size,
     );
 
     if next_head == game.apple {
@@ -168,6 +165,6 @@ fn get_next_loc(current_loc: &Location, move_dir: &Direction, grid_size: &usize)
         &Direction::Up => current_loc.to_up(&grid_size),
         &Direction::Down => current_loc.to_down(&grid_size),
         &Direction::Left => current_loc.to_left(&grid_size),
-        &Direction::Right => current_loc.to_right(&grid_size)
+        &Direction::Right => current_loc.to_right(&grid_size),
     };
 }
