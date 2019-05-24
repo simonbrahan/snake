@@ -13,12 +13,12 @@ pub enum Direction {
 
 impl Direction {
     fn opposite(&self) -> Direction {
-        return match self {
-            &Direction::Up => Direction::Down,
-            &Direction::Down => Direction::Up,
-            &Direction::Left => Direction::Right,
-            &Direction::Right => Direction::Left,
-        };
+        match *self {
+            Direction::Up => Direction::Down,
+            Direction::Down => Direction::Up,
+            Direction::Left => Direction::Right,
+            Direction::Right => Direction::Left,
+        }
     }
 }
 
@@ -30,62 +30,38 @@ pub struct Location {
 
 impl Location {
     fn new(x: usize, y: usize) -> Location {
-        return Location { x: x, y: y };
+        Location { x, y }
     }
 
-    fn random(grid_size: &usize) -> Location {
-        return Location::new(
-            rand::thread_rng().gen_range(1, *grid_size),
-            rand::thread_rng().gen_range(1, *grid_size),
-        );
+    fn random(grid_size: usize) -> Location {
+        Location::new(
+            rand::thread_rng().gen_range(1, grid_size),
+            rand::thread_rng().gen_range(1, grid_size),
+        )
     }
 
-    fn to_up(&self, grid_size: &usize) -> Location {
-        let new_y;
+    fn to_up(&self, grid_size: usize) -> Location {
+        let new_y = if self.y == 0 { grid_size - 1 } else { self.y - 1 };
 
-        if self.y == 0 {
-            new_y = grid_size - 1;
-        } else {
-            new_y = self.y - 1;
-        }
-
-        return Location::new(self.x, new_y);
+        Location::new(self.x, new_y)
     }
 
-    fn to_down(&self, grid_size: &usize) -> Location {
-        let new_y;
+    fn to_down(&self, grid_size: usize) -> Location {
+        let new_y = if self.y >= grid_size { 0 } else { self.y + 1};
 
-        if self.y >= *grid_size - 1 {
-            new_y = 0;
-        } else {
-            new_y = self.y + 1;
-        }
-
-        return Location::new(self.x, new_y);
+        Location::new(self.x, new_y)
     }
 
-    fn to_left(&self, grid_size: &usize) -> Location {
-        let new_x;
+    fn to_left(&self, grid_size: usize) -> Location {
+        let new_x = if self.x == 0 { grid_size - 1 } else { self.x - 1 };
 
-        if self.x == 0 {
-            new_x = *grid_size - 1;
-        } else {
-            new_x = self.x - 1;
-        }
-
-        return Location::new(new_x, self.y);
+        Location::new(new_x, self.y)
     }
 
-    fn to_right(&self, grid_size: &usize) -> Location {
-        let new_x;
+    fn to_right(&self, grid_size: usize) -> Location {
+        let new_x = if self.x >= grid_size - 1 { 0 } else { self.x + 1 };
 
-        if self.x >= *grid_size - 1 {
-            new_x = 0;
-        } else {
-            new_x = self.x + 1;
-        }
-
-        return Location::new(new_x, self.y);
+        Location::new(new_x, self.y)
     }
 }
 
@@ -103,19 +79,19 @@ impl Game {
     pub fn new() -> Game {
         let grid_size: usize = 20;
 
-        return Game {
-            trail: VecDeque::from(vec![Location::random(&grid_size)]),
+        Game {
+            trail: VecDeque::from(vec![Location::random(grid_size)]),
             trail_len: 5,
-            grid_size: grid_size,
+            grid_size,
             player_direction: Direction::Right,
-            apple: Location::random(&grid_size),
+            apple: Location::random(grid_size),
             waiting_time: 0.0,
-        };
+        }
     }
 
     fn current_head(&self) -> Location {
-        let ref current_head = self.trail.front().unwrap();
-        return Location::new(current_head.x, current_head.y);
+        let current_head = &self.trail.front().unwrap();
+        Location::new(current_head.x, current_head.y)
     }
 
     pub fn change_dir(&mut self, new_dir: Direction) {
@@ -124,6 +100,12 @@ impl Game {
         }
 
         self.player_direction = new_dir;
+    }
+}
+
+impl Default for Game {
+    fn default() -> Self {
+        Self::new()
     }
 }
 
@@ -143,12 +125,12 @@ pub fn do_game_move(game: &mut Game, time_change: f64) {
     let next_head = get_next_loc(
         &game.current_head(),
         &game.player_direction,
-        &game.grid_size,
+        game.grid_size,
     );
 
     if next_head == game.apple {
         game.trail_len += 1;
-        game.apple = Location::random(&game.grid_size);
+        game.apple = Location::random(game.grid_size);
     }
 
     if game.trail.contains(&next_head) {
@@ -160,11 +142,11 @@ pub fn do_game_move(game: &mut Game, time_change: f64) {
     game.trail.truncate(game.trail_len);
 }
 
-fn get_next_loc(current_loc: &Location, move_dir: &Direction, grid_size: &usize) -> Location {
-    return match move_dir {
-        &Direction::Up => current_loc.to_up(&grid_size),
-        &Direction::Down => current_loc.to_down(&grid_size),
-        &Direction::Left => current_loc.to_left(&grid_size),
-        &Direction::Right => current_loc.to_right(&grid_size),
-    };
+fn get_next_loc(current_loc: &Location, move_dir: &Direction, grid_size: usize) -> Location {
+    match *move_dir {
+        Direction::Up => current_loc.to_up(grid_size),
+        Direction::Down => current_loc.to_down(grid_size),
+        Direction::Left => current_loc.to_left(grid_size),
+        Direction::Right => current_loc.to_right(grid_size),
+    }
 }
