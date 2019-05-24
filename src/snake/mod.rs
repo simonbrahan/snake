@@ -41,25 +41,37 @@ impl Location {
     }
 
     fn to_up(&self, grid_size: usize) -> Location {
-        let new_y = if self.y == 0 { grid_size - 1 } else { self.y - 1 };
+        let new_y = if self.y == 0 {
+            grid_size - 1
+        } else {
+            self.y - 1
+        };
 
         Location::new(self.x, new_y)
     }
 
     fn to_down(&self, grid_size: usize) -> Location {
-        let new_y = if self.y >= grid_size { 0 } else { self.y + 1};
+        let new_y = if self.y >= grid_size { 0 } else { self.y + 1 };
 
         Location::new(self.x, new_y)
     }
 
     fn to_left(&self, grid_size: usize) -> Location {
-        let new_x = if self.x == 0 { grid_size - 1 } else { self.x - 1 };
+        let new_x = if self.x == 0 {
+            grid_size - 1
+        } else {
+            self.x - 1
+        };
 
         Location::new(new_x, self.y)
     }
 
     fn to_right(&self, grid_size: usize) -> Location {
-        let new_x = if self.x >= grid_size - 1 { 0 } else { self.x + 1 };
+        let new_x = if self.x >= grid_size - 1 {
+            0
+        } else {
+            self.x + 1
+        };
 
         Location::new(new_x, self.y)
     }
@@ -122,11 +134,7 @@ pub fn do_game_move(game: &mut Game, time_change: f64) {
 
     game.waiting_time = 0.0;
 
-    let next_head = get_next_loc(
-        &game.current_head(),
-        &game.player_direction,
-        game.grid_size,
-    );
+    let next_head = get_next_loc(&game.current_head(), &game.player_direction, game.grid_size);
 
     if next_head == game.apple {
         game.trail_len += 1;
